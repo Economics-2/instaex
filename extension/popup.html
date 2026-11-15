@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<style>
+  body{margin:0;width:310px;font:14px/1.5 "Nirmala UI","Hind Siliguri",system-ui,sans-serif;color:#14261D;background:#EDF3EE}
+  .top{display:flex;align-items:center;gap:10px;padding:14px 14px 6px}
+  .top img{width:40px;height:40px;border-radius:10px}
+  h1{font-size:18px;margin:0;line-height:1.1} .by{font-size:12px;color:#5A6E63;margin:0}
+  .st{margin:6px 14px 0;font-size:13px;display:flex;align-items:center;gap:7px}
+  .dot{width:10px;height:10px;border-radius:50%;background:#aaa} .dot.on{background:#1f8f4e} .dot.off{background:#D9363E}
+  .body{padding:10px 14px 14px}
+  button{width:100%;font:inherit;font-weight:600;border:0;border-radius:12px;padding:12px;background:#0B5D45;color:#fff;cursor:pointer}
+  button:disabled{opacity:.6;cursor:wait}
+  label{display:flex;gap:8px;align-items:flex-start;margin-top:12px;font-size:12.5px;color:#34493D;cursor:pointer}
+  input{margin-top:3px;accent-color:#0B5D45}
+  .msg{min-height:20px;margin:8px 0 0;font-size:13px}
+</style>
+</head>
+<body>
+  <div class="top"><img src="icons/icon48.png" alt=""><div><h1>Insta</h1><p class="by">তৈরি করেছেন MH &amp; MIK</p></div></div>
+  <div class="st"><span class="dot" id="dot"></span><span id="st">অ্যাপ খোঁজা হচ্ছে…</span></div>
+  <div class="body">
+    <button id="send">এই পেজটি Insta-তে পাঠান</button>
+    <p class="msg" id="msg" role="status"></p>
+    <label><input type="checkbox" id="ck"><span>লগইন কুকি সাথে পাঠান (প্রাইভেট বা লগইন-লাগা ভিডিওর জন্য)। কুকি শুধু আপনার কম্পিউটারের Insta অ্যাপে যায়, বাইরে কোথাও নয়।</span></label>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

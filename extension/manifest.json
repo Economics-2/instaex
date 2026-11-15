@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Insta — ভিডিও ডাউনলোডার",
+  "short_name": "Insta",
+  "version": "1.1.0",
+  "description": "ইউটিউব, ফেসবুক ও ইনস্টাগ্রামের ভিডিও এক ক্লিকে Insta অ্যাপে সেরা কোয়ালিটিতে ডাউনলোড করুন। তৈরি করেছেন MH & MIK।",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAibBUtclK/56aoAH5hwftgyHLt03oUcINwVkukyRANsy5nSySJKlq+xJE7hS+gugT0Bt+P1AlLPwPZp2rHL1J4l8kqOkYn8iLrV8CS86cktKuLTCTIwpky1bhEA4rnXq522OUDd8nXUPzFtZmWgcWuvED2mGkqhEJx1BRut7r1u38GkaG4vu3b01Y3kfxoOMjxvUjqMxJbjoRZBkfiFhk0KwIQ2CuFDXbCi/wpqfY778976cZm78nToUL/Vr30Wt++tuqDgQmGIHZFGQHxrTRi4HS48rj9b1/j5da0VoQsoWOeGQHB6NP+ewRoYR73Dqip1ppzthAhwOqXjjgPyteswIDAQAB",
+  "icons": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "permissions": ["contextMenus", "storage", "cookies"],
+  "host_permissions": [
+    "http://127.0.0.1:8765/*",
+    "https://*.youtube.com/*",
+    "https://*.facebook.com/*",
+    "https://*.instagram.com/*"
+  ],
+  "background": { "service_worker": "background.js" },
+  "action": {
+    "default_title": "Insta",
+    "default_popup": "popup.html",
+    "default_icon": { "16": "icons/icon16.png", "32": "icons/icon32.png" }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.youtube.com/*", "https://*.facebook.com/*", "https://*.instagram.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
