@@ -1,0 +1,67 @@
+name: Build EXE
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python packages
+        run: pip install -r requirements.txt
+
+      # yt-dlp.exe ও ffmpeg.exe বিল্ডের সময় নামানো হয়, রিপোতে রাখতে হয় না
+      - name: Download yt-dlp and ffmpeg
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          New-Item -ItemType Directory -Force bin | Out-Null
+          Invoke-WebRequest "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -OutFile bin/yt-dlp.exe
+          Invoke-WebRequest "https://github.com/yt-dlp/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip" -OutFile ffmpeg.zip
+          Expand-Archive ffmpeg.zip -DestinationPath ffmpeg-extract
+          $ff = Get-ChildItem ffmpeg-extract -Recurse -Filter ffmpeg.exe | Select-Object -First 1
+          Copy-Item $ff.FullName bin/ffmpeg.exe
+          Get-ChildItem bin | Format-Table Name, Length
+
+      - name: Build Insta.exe
+        shell: pwsh
+        run: |
+          pyinstaller --noconfirm --clean --onefile --noconsole --name Insta `
+            --icon assets/icon.ico --version-file version_info.txt `
+            --add-data "web;web" --add-data "bin;bin" --add-data "assets/icon.ico;assets" --add-data "extension;extension" `
+            --collect-all webview `
+            main.py
+
+      # তৈরি exe নিজেই নিজেকে পরীক্ষা করে: WebView2 লাইব্রেরি, yt-dlp, ffmpeg, সার্ভার
+      - name: Self-test the exe
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath "dist\Insta.exe" -ArgumentList "--selftest","selftest.txt" -Wait -PassThru
+          if (Test-Path selftest.txt) { Get-Content selftest.txt } else { Write-Host "selftest.txt তৈরি হয়নি" }
+          if ($p.ExitCode -ne 0) { throw "Self-test failed (exit $($p.ExitCode))" }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Insta-exe
+          path: dist/Insta.exe
+
+      # কম্পিউটারের ব্রাউজার থেকে সরাসরি ডাউনলোডের জন্য Releases পেজে "latest" নামে প্রকাশ হবে
+      - name: Publish to Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Insta (Windows) — Latest
+          body: "সর্বশেষ বিল্ড। Insta.exe ডাউনলোড করে ডাবল-ক্লিক করুন। তৈরি করেছেন MH & MIK।"
+          files: dist/Insta.exe
+          make_latest: true
